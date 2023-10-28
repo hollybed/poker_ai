@@ -7,45 +7,22 @@ from poker_ai.poker.card import Card
 
 def make_starting_hand_lossless(starting_hand, short_deck) -> int:
     """"""
+    N_DECK_LEN = 13
     ranks = []
     suits = []
     for card in starting_hand:
         ranks.append(card.rank_int)
         suits.append(card.suit)
+    ranks.sort(reverse=True)
     if len(set(suits)) == 1:
         suited = True
     else:
         suited = False
-    if all(c_rank == 14 for c_rank in ranks):
-        return 0
-    elif all(c_rank == 13 for c_rank in ranks):
-        return 1
-    elif all(c_rank == 12 for c_rank in ranks):
-        return 2
-    elif all(c_rank == 11 for c_rank in ranks):
-        return 3
-    elif all(c_rank == 10 for c_rank in ranks):
-        return 4
-    elif 14 in ranks and 13 in ranks:
-        return 5 if suited else 15
-    elif 14 in ranks and 12 in ranks:
-        return 6 if suited else 16
-    elif 14 in ranks and 11 in ranks:
-        return 7 if suited else 17
-    elif 14 in ranks and 10 in ranks:
-        return 8 if suited else 18
-    elif 13 in ranks and 12 in ranks:
-        return 9 if suited else 19
-    elif 13 in ranks and 11 in ranks:
-        return 10 if suited else 20
-    elif 13 in ranks and 10 in ranks:
-        return 11 if suited else 21
-    elif 12 in ranks and 11 in ranks:
-        return 12 if suited else 22
-    elif 12 in ranks and 10 in ranks:
-        return 13 if suited else 23
-    elif 11 in ranks and 10 in ranks:
-        return 14 if suited else 24
+    if ranks[0]==ranks[1]:
+        return N_DECK_LEN+1-ranks[1]
+    else:
+        temp = N_DECK_LEN+(ranks[0]+N_DECK_LEN-2)*(N_DECK_LEN+1-ranks[0])/2+ranks[0]-ranks[1]-1
+        return int(temp) if suited else int(temp+N_DECK_LEN*(N_DECK_LEN-1)/2)
 
 
 def compute_preflop_lossless_abstraction(builder) -> Dict[Tuple[Card, Card], int]:
@@ -54,7 +31,7 @@ def compute_preflop_lossless_abstraction(builder) -> Dict[Tuple[Card, Card], int
     Only works for the short deck presently.
     """
     # Making sure this is 20 card deck with 2-9 removed
-    allowed_ranks = {10, 11, 12, 13, 14}
+    allowed_ranks = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
     found_ranks = set([c.rank_int for c in builder._cards])
     if found_ranks != allowed_ranks:
         raise ValueError(
