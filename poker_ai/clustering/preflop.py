@@ -21,7 +21,7 @@ def make_starting_hand_lossless(starting_hand, short_deck) -> int:
     if ranks[0]==ranks[1]:
         return N_DECK_LEN+1-ranks[1]
     else:
-        temp = N_DECK_LEN+(ranks[0]+N_DECK_LEN-2)*(N_DECK_LEN+1-ranks[0])/2+ranks[0]-ranks[1]-1
+        temp = (ranks[0]+2*N_DECK_LEN-14)*(15-ranks[0])/2+ranks[0]-ranks[1]-1
         return int(temp) if suited else int(temp+N_DECK_LEN*(N_DECK_LEN-1)/2)
 
 
